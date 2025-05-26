@@ -24,11 +24,10 @@ class AllocationServiceTest {
   private static final String PARENT_1 = "PARENT_1";
   private static final String PARENT_2 = "PARENT_2";
 
-// TODO clean code et todos avant commit.
-// TODO quand j'ai fini d'écrire ces tests, lui demander de vérifier selon schémà car c'est vite casse tete.
 
   @Test
   void getParentDroitAllocation_casA_parent1SeulActif_returnsParent1() {
+    //Remplacement des Map par une classe (ParentAllocationRequest).
     //Map<String, Object> params = new HashMap<>();
     ParentAllocationRequest req = new ParentAllocationRequest();
    // params.put("parent1ActiviteLucrative", true);
@@ -42,10 +41,7 @@ class AllocationServiceTest {
 
   @Test
   void getParentDroitAllocation_casA_parent2SeulActif_returnsParent2() {
-    //Map<String, Object> params = new HashMap<>();
     ParentAllocationRequest req = new ParentAllocationRequest();
-   // params.put("parent1ActiviteLucrative", false);
-   // params.put("parent2ActiviteLucrative", true);
     req.setParent1ActiviteLucrative(false);
     req.setParent2ActiviteLucrative(true);
 
@@ -53,6 +49,8 @@ class AllocationServiceTest {
     assertEquals(PARENT_2, result);
   }
 
+
+  // Anciens tests utilisés avant la mise en place du schéma de l'exercice 1 partie 4.
 
 //  @Test
 //  void getParentDroitAllocation_lesDeuxActifs_parent1SalairePlusHaut_returnsParent1() {
@@ -69,7 +67,6 @@ class AllocationServiceTest {
 //  req.setParent1Salaire(5000);
 //  req.setParent2Salaire(3000);
 //
-//
 //    String result = allocationService.getParentDroitAllocation(req);
 //    assertEquals(PARENT_1, result);
 //  }
@@ -78,10 +75,6 @@ class AllocationServiceTest {
 //  void getParentDroitAllocation_lesDeuxActifs_parent2SalairePlusHaut_returnsParent2() {
 //  //  Map<String, Object> params = new HashMap<>();
 //    ParentAllocationRequest req = new ParentAllocationRequest();
-////    params.put("parent1ActiviteLucrative", true);
-////    params.put("parent2ActiviteLucrative", true);
-////    params.put("parent1Salaire", 3000);
-////    params.put("parent2Salaire", 5000);
 //    req.setParent1ActiviteLucrative(true);
 //    req.setParent2ActiviteLucrative(true);
 //    req.setParent1Salaire(3000);
@@ -93,12 +86,7 @@ class AllocationServiceTest {
 
 //  @Test
 //  void getParentDroitAllocation_aucunActif_parent1SalairePlusHaut_returnsParent1() {
-////    Map<String, Object> params = new HashMap<>();
 //    ParentAllocationRequest req = new ParentAllocationRequest();
-////    params.put("parent1ActiviteLucrative", false);
-////    params.put("parent2ActiviteLucrative", false);
-////    params.put("parent1Salaire", 4500);
-////    params.put("parent2Salaire", 3000);
 //    req.setParent1ActiviteLucrative(false);
 //    req.setParent2ActiviteLucrative(false);
 //    req.setParent1Salaire(4500);
@@ -111,12 +99,7 @@ class AllocationServiceTest {
 
 //  @Test
 //  void getParentDroitAllocation_salaireEgal_returnsParent2() {
-////    Map<String, Object> params = new HashMap<>();
 //    ParentAllocationRequest req = new ParentAllocationRequest();
-////    params.put("parent1ActiviteLucrative", false);
-////    params.put("parent2ActiviteLucrative", false);
-////    params.put("parent1Salaire", 4000);
-////    params.put("parent2Salaire", 4000);
 //    req.setParent1ActiviteLucrative(false);
 //    req.setParent2ActiviteLucrative(false);
 //    req.setParent1Salaire(4000);
@@ -125,8 +108,6 @@ class AllocationServiceTest {
 //    String result = allocationService.getParentDroitAllocation(req);
 //    assertEquals(PARENT_2, result); // car return PARENT_2 si égalité
 //  }
-
-
 
 //  @Test
 //  void getParentDroitAllocation_casA_parent1SeulActif_returnsParent1() {
@@ -150,7 +131,6 @@ class AllocationServiceTest {
     assertEquals(PARENT_1, result);
   }
 
-
   @Test
   void getParentDroitAllocation_casB_parent2SeulAvecAutorite_returnsParent2() {
     ParentAllocationRequest req = new ParentAllocationRequest();
@@ -163,9 +143,6 @@ class AllocationServiceTest {
     assertEquals(PARENT_2, result);
   }
 
-
-
-
   @Test
   void getParentDroitAllocation_casC_parentsSepares_enfantAvecParent2_returnsParent2() {
     ParentAllocationRequest req = new ParentAllocationRequest();
@@ -174,12 +151,13 @@ class AllocationServiceTest {
     req.setParent1AutoriteParentale(true);
     req.setParent2AutoriteParentale(true);
     req.setParentsEnsemble(false);
-    req.setEnfantAvecParent(PARENT_2);
+    req.setEnfantResidence("Neuchâtel");
+    req.setParent1Residence("Bienne");
+    req.setParent2Residence("Neuchâtel");
 
     String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result);
   }
-
 
   @Test
   void getParentDroitAllocation_casC_parentsSepares_enfantAvecParent1_returnsParent1() {
@@ -189,51 +167,45 @@ class AllocationServiceTest {
     req.setParent1AutoriteParentale(true);
     req.setParent2AutoriteParentale(true);
     req.setParentsEnsemble(false);
-    req.setEnfantAvecParent(PARENT_1);
+    req.setEnfantResidence("Fribourg");
+    req.setParent1Residence("Fribourg");
+    req.setParent2Residence("Neuchâtel");
 
     String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_1, result);
   }
 
-
-
-
-
   @Test
-  void getParentDroitAllocation_casD_parentsSepares_parent1TravailleDansCanton_returnsParent1() {
+  void getParentDroitAllocation_casD_parentsEnsemble_parent1TravailleDansCanton_returnsParent1() {
     ParentAllocationRequest req = new ParentAllocationRequest();
     req.setParent1ActiviteLucrative(true);
     req.setParent2ActiviteLucrative(true);
     req.setParent1AutoriteParentale(true);
     req.setParent2AutoriteParentale(true);
     req.setParentsEnsemble(true);
-    req.setEnfantAvecParent(""); // personne spécifié       //besoin de cette ligne?
-    req.setParent1TravailleDansCantonEnfant(true);
-    req.setParent2TravailleDansCantonEnfant(false);
+    req.setEnfantResidence("Genève");
+    req.setParent1LieuTravail("Genève");
+    req.setParent2LieuTravail("Lausanne");
 
     String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_1, result);
   }
 
-
   @Test
-  void getParentDroitAllocation_casD_parentsSepares_parent2TravailleDansCanton_returnsParent2() {
+  void getParentDroitAllocation_casD_parentsEnsemble_parent2TravailleDansCanton_returnsParent2() {
     ParentAllocationRequest req = new ParentAllocationRequest();
     req.setParent1ActiviteLucrative(true);
     req.setParent2ActiviteLucrative(true);
     req.setParent1AutoriteParentale(true);
     req.setParent2AutoriteParentale(true);
     req.setParentsEnsemble(true);
-    req.setEnfantAvecParent(""); // personne spécifié
-    req.setParent1TravailleDansCantonEnfant(false);
-    req.setParent2TravailleDansCantonEnfant(true);
+    req.setEnfantResidence("Vaud");
+    req.setParent1LieuTravail("Fribourg");
+    req.setParent2LieuTravail("Vaud");
 
     String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result);
   }
-
-
-
 
   @Test
   void getParentDroitAllocation_casE_parentsEnsemble_unSalaireUnIndependant_parent2Salaire_returnsParent2() {
@@ -243,7 +215,7 @@ class AllocationServiceTest {
     req.setParent1AutoriteParentale(true);
     req.setParent2AutoriteParentale(true);
     req.setParentsEnsemble(true);
-    req.setParent1EstIndependant(true); // indé
+    req.setParent1EstIndependant(true); // indépendant
     req.setParent2EstIndependant(false);  // salarié
 
     String result = allocationService.getParentDroitAllocation(req);
@@ -299,12 +271,6 @@ class AllocationServiceTest {
     assertEquals(PARENT_1, result);
   }
 
-
-
-
-
-
-
   @Test
   void getParentDroitAllocation_casF_parentsEnsemble_deuxIndependants_parent1SalairePlusHaut_returnsParent1() {
     ParentAllocationRequest req = new ParentAllocationRequest();
@@ -338,10 +304,6 @@ class AllocationServiceTest {
     String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result);
   }
-
-
-
-
 
   @BeforeEach
   void setUp() {
@@ -390,5 +352,4 @@ class AllocationServiceTest {
         () -> assertThat(all.get(1).getDebut()).isEqualTo(LocalDate.now()),
         () -> assertThat(all.get(1).getFin()).isNull());
   }
-
 }

@@ -4,24 +4,18 @@ public class ParentAllocationRequest {
     private String enfantResidence;
     private String parent1Residence;
     private String parent2Residence;
+    private String parent1LieuTravail;
+    private String parent2LieuTravail;
     private boolean parent1ActiviteLucrative;
     private boolean parent2ActiviteLucrative;
     private boolean parentsEnsemble;
     private boolean parent1AutoriteParentale;
     private boolean parent2AutoriteParentale;
-    private boolean parent1TravailleDansCantonEnfant;
-    private boolean parent2TravailleDansCantonEnfant;
     private boolean parent1EstIndependant;
     private boolean parent2EstIndependant;
-    private String enfantAvecParent; // "PARENT_1" ou "PARENT_2
     private Number parent1Salaire;
     private Number parent2Salaire;
 
-
-    //todo tout ca si le temps le permet.
-    // TODO les résidences ne sont pas utiliséés?? mais en fait il faudrait
-    // prendre en compte les lieux de résidence enfant/parents...
-    //et aussi lieu de travail parents / lieu de résidence enfant...
 
     public String getEnfantResidence() {
         return enfantResidence;
@@ -103,22 +97,6 @@ public class ParentAllocationRequest {
         this.parent2AutoriteParentale = parent2AutoriteParentale;
     }
 
-    public boolean isParent1TravailleDansCantonEnfant() {
-        return parent1TravailleDansCantonEnfant;
-    }
-
-    public void setParent1TravailleDansCantonEnfant(boolean parent1TravailleDansCantonEnfant) {
-        this.parent1TravailleDansCantonEnfant = parent1TravailleDansCantonEnfant;
-    }
-
-    public boolean isParent2TravailleDansCantonEnfant() {
-        return parent2TravailleDansCantonEnfant;
-    }
-
-    public void setParent2TravailleDansCantonEnfant(boolean parent2TravailleDansCantonEnfant) {
-        this.parent2TravailleDansCantonEnfant = parent2TravailleDansCantonEnfant;
-    }
-
     public boolean isParent1EstIndependant() {
         return parent1EstIndependant;
     }
@@ -135,15 +113,20 @@ public class ParentAllocationRequest {
         this.parent2EstIndependant = parent2EstIndependant;
     }
 
-    public String getEnfantAvecParent() {
-        return enfantAvecParent;
+    public String getParent1LieuTravail() {
+        return parent1LieuTravail;
     }
 
-    public void setEnfantAvecParent(String enfantAvecParent) {
-        this.enfantAvecParent = enfantAvecParent;
+    public void setParent1LieuTravail(String parent1LieuTravail) {
+        this.parent1LieuTravail = parent1LieuTravail;
     }
 
+    public String getParent2LieuTravail() {
+        return parent2LieuTravail;
+    }
 
-
+    public void setParent2LieuTravail(String parent2LieuTravail) {
+        this.parent2LieuTravail = parent2LieuTravail;
+    }
 }
 
