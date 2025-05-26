@@ -26,72 +26,102 @@ class AllocationServiceTest {
 
 
 
+
   @Test
   void getParentDroitAllocation_parent1SeulActif_returnsParent1() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", true);
-    params.put("parent2ActiviteLucrative", false);
+    //Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+   // params.put("parent1ActiviteLucrative", true);
+   // params.put("parent2ActiviteLucrative", false);
+    req.setParent1ActiviteLucrative(true);
+    req.setParent2ActiviteLucrative(false);
 
-    String result = allocationService.getParentDroitAllocation(params);
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_1, result);
   }
 
   @Test
   void getParentDroitAllocation_parent2SeulActif_returnsParent2() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", false);
-    params.put("parent2ActiviteLucrative", true);
+    //Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+   // params.put("parent1ActiviteLucrative", false);
+   // params.put("parent2ActiviteLucrative", true);
+    req.setParent1ActiviteLucrative(false);
+    req.setParent2ActiviteLucrative(true);
 
-    String result = allocationService.getParentDroitAllocation(params);
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result);
   }
 
   @Test
   void getParentDroitAllocation_lesDeuxActifs_parent1SalairePlusHaut_returnsParent1() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", true);
+   // Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+  /*  params.put("parent1ActiviteLucrative", true);
     params.put("parent2ActiviteLucrative", true);
     params.put("parent1Salaire", 5000);
     params.put("parent2Salaire", 3000);
 
-    String result = allocationService.getParentDroitAllocation(params);
+   */
+  req.setParent1ActiviteLucrative(true);
+  req.setParent2ActiviteLucrative(true);
+  req.setParent1Salaire(5000);
+  req.setParent2Salaire(3000);
+
+
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_1, result);
   }
 
   @Test
   void getParentDroitAllocation_lesDeuxActifs_parent2SalairePlusHaut_returnsParent2() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", true);
-    params.put("parent2ActiviteLucrative", true);
-    params.put("parent1Salaire", 3000);
-    params.put("parent2Salaire", 5000);
+  //  Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+//    params.put("parent1ActiviteLucrative", true);
+//    params.put("parent2ActiviteLucrative", true);
+//    params.put("parent1Salaire", 3000);
+//    params.put("parent2Salaire", 5000);
+    req.setParent1ActiviteLucrative(true);
+    req.setParent2ActiviteLucrative(true);
+    req.setParent1Salaire(3000);
+    req.setParent2Salaire(5000);
 
-    String result = allocationService.getParentDroitAllocation(params);
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result);
   }
 
   @Test
   void getParentDroitAllocation_aucunActif_parent1SalairePlusHaut_returnsParent1() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", false);
-    params.put("parent2ActiviteLucrative", false);
-    params.put("parent1Salaire", 4500);
-    params.put("parent2Salaire", 3000);
+//    Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+//    params.put("parent1ActiviteLucrative", false);
+//    params.put("parent2ActiviteLucrative", false);
+//    params.put("parent1Salaire", 4500);
+//    params.put("parent2Salaire", 3000);
+    req.setParent1ActiviteLucrative(false);
+    req.setParent2ActiviteLucrative(false);
+    req.setParent1Salaire(4500);
+    req.setParent2Salaire(3000);
 
-    String result = allocationService.getParentDroitAllocation(params);
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_1, result);
   }
 
 
   @Test
   void getParentDroitAllocation_salaireEgal_returnsParent2() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("parent1ActiviteLucrative", false);
-    params.put("parent2ActiviteLucrative", false);
-    params.put("parent1Salaire", 4000);
-    params.put("parent2Salaire", 4000);
+//    Map<String, Object> params = new HashMap<>();
+    ParentAllocationRequest req = new ParentAllocationRequest();
+//    params.put("parent1ActiviteLucrative", false);
+//    params.put("parent2ActiviteLucrative", false);
+//    params.put("parent1Salaire", 4000);
+//    params.put("parent2Salaire", 4000);
+    req.setParent1ActiviteLucrative(false);
+    req.setParent2ActiviteLucrative(false);
+    req.setParent1Salaire(4000);
+    req.setParent2Salaire(4000);
 
-    String result = allocationService.getParentDroitAllocation(params);
+    String result = allocationService.getParentDroitAllocation(req);
     assertEquals(PARENT_2, result); // car return PARENT_2 si égalité
   }
 
