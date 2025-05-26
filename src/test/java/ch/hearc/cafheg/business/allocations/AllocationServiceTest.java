@@ -8,9 +8,8 @@ import ch.hearc.cafheg.infrastructure.persistance.AllocataireMapper;
 import ch.hearc.cafheg.infrastructure.persistance.AllocationMapper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,6 +20,83 @@ class AllocationServiceTest {
 
   private AllocataireMapper allocataireMapper;
   private AllocationMapper allocationMapper;
+
+  private static final String PARENT_1 = "PARENT_1";
+  private static final String PARENT_2 = "PARENT_2";
+
+
+
+  @Test
+  void getParentDroitAllocation_parent1SeulActif_returnsParent1() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", true);
+    params.put("parent2ActiviteLucrative", false);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_1, result);
+  }
+
+  @Test
+  void getParentDroitAllocation_parent2SeulActif_returnsParent2() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", false);
+    params.put("parent2ActiviteLucrative", true);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_2, result);
+  }
+
+  @Test
+  void getParentDroitAllocation_lesDeuxActifs_parent1SalairePlusHaut_returnsParent1() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", true);
+    params.put("parent2ActiviteLucrative", true);
+    params.put("parent1Salaire", 5000);
+    params.put("parent2Salaire", 3000);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_1, result);
+  }
+
+  @Test
+  void getParentDroitAllocation_lesDeuxActifs_parent2SalairePlusHaut_returnsParent2() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", true);
+    params.put("parent2ActiviteLucrative", true);
+    params.put("parent1Salaire", 3000);
+    params.put("parent2Salaire", 5000);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_2, result);
+  }
+
+  @Test
+  void getParentDroitAllocation_aucunActif_parent1SalairePlusHaut_returnsParent1() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", false);
+    params.put("parent2ActiviteLucrative", false);
+    params.put("parent1Salaire", 4500);
+    params.put("parent2Salaire", 3000);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_1, result);
+  }
+
+
+  @Test
+  void getParentDroitAllocation_salaireEgal_returnsParent2() {
+    Map<String, Object> params = new HashMap<>();
+    params.put("parent1ActiviteLucrative", false);
+    params.put("parent2ActiviteLucrative", false);
+    params.put("parent1Salaire", 4000);
+    params.put("parent2Salaire", 4000);
+
+    String result = allocationService.getParentDroitAllocation(params);
+    assertEquals(PARENT_2, result); // car return PARENT_2 si égalité
+  }
+
+
+
 
   @BeforeEach
   void setUp() {
