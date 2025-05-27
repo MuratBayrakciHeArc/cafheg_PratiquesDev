@@ -2,10 +2,7 @@ package ch.hearc.cafheg.infrastructure.api;
 
 import static ch.hearc.cafheg.infrastructure.persistance.Database.inTransaction;
 
-import ch.hearc.cafheg.business.allocations.Allocataire;
-import ch.hearc.cafheg.business.allocations.Allocation;
-import ch.hearc.cafheg.business.allocations.AllocationService;
-import ch.hearc.cafheg.business.allocations.ParentAllocationRequest;
+import ch.hearc.cafheg.business.allocations.*;
 import ch.hearc.cafheg.business.versements.VersementService;
 import ch.hearc.cafheg.infrastructure.pdf.PDFExporter;
 import ch.hearc.cafheg.infrastructure.persistance.AllocataireMapper;
@@ -13,6 +10,7 @@ import ch.hearc.cafheg.infrastructure.persistance.AllocationMapper;
 import ch.hearc.cafheg.infrastructure.persistance.EnfantMapper;
 import ch.hearc.cafheg.infrastructure.persistance.VersementMapper;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -78,5 +76,49 @@ public class RESTController {
   @GetMapping(value = "/allocataires/{allocataireId}/versements", produces = MediaType.APPLICATION_PDF_VALUE)
   public byte[] pdfVersements(@PathVariable("allocataireId") int allocataireId) {
     return inTransaction(() -> versementService.exportPDFVersements(allocataireId));
+  }
+
+  @DeleteMapping("/allocataires/{noAVS}")
+  public ResponseEntity<?> supprimerAllocataire(@PathVariable String noAVS) {
+    return inTransaction(() -> {
+      try {
+        AllocataireService service = new AllocataireService(new AllocataireMapper(), new VersementMapper());
+        service.supprimerAllocataireParNoAVS(noAVS);
+        return ResponseEntity.noContent().build();
+      } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+      } catch (IllegalStateException e) {
+        return ResponseEntity.status(409).body(e.getMessage());
+      }
+    });
+  }
+
+  @PutMapping("/allocataires/{noAVS}")
+  public ResponseEntity<?> modifierAllocataire(
+          @PathVariable String noAVS,
+          @RequestBody Map<String, String> body
+  ) {
+    return inTransaction(() -> {
+      try {
+        String nom = body.get("nom");
+        String prenom = body.get("prenom");
+
+        AllocataireMapper mapper = new AllocataireMapper();
+        long id = mapper.findNumeroByNoAVS(noAVS);
+        Allocataire allocataire = mapper.findById(id);
+
+        AllocataireService service = new AllocataireService(mapper, new VersementMapper());
+        boolean updated = service.modifierNomPrenom(allocataire, nom, prenom);
+
+        if (updated) {
+          return ResponseEntity.ok("Allocataire mis à jour");
+        } else {
+          return ResponseEntity.ok("Aucune modification effectuée");
+        }
+
+      } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+      }
+    });
   }
 }

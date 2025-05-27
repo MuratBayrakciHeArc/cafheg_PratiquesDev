@@ -69,4 +69,49 @@ public class AllocataireMapper extends Mapper {
       throw new RuntimeException(e);
     }
   }
+
+  public void delete(long id) {
+    String DELETE_QUERY = "DELETE FROM ALLOCATAIRES WHERE NUMERO=?";
+    Connection connection = activeJDBCConnection();
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
+      preparedStatement.setLong(1, id);
+      preparedStatement.executeUpdate();
+      System.out.println("Allocataire supprimé : " + id);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void updateNomPrenom(String noAVS, String nouveauNom, String nouveauPrenom) {
+    String UPDATE_QUERY = "UPDATE ALLOCATAIRES SET NOM = ?, PRENOM = ? WHERE NO_AVS = ?";
+    Connection connection = activeJDBCConnection();
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+      preparedStatement.setString(1, nouveauNom);
+      preparedStatement.setString(2, nouveauPrenom);
+      preparedStatement.setString(3, noAVS);
+      int rows = preparedStatement.executeUpdate();
+      System.out.println("Nombre de lignes modifiées : " + rows);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public long findNumeroByNoAVS(String noAVS) {
+    String QUERY = "SELECT NUMERO FROM ALLOCATAIRES WHERE NO_AVS = ?";
+    Connection connection = activeJDBCConnection();
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(QUERY);
+      preparedStatement.setString(1, noAVS);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      if (resultSet.next()) {
+        return resultSet.getLong("NUMERO");
+      } else {
+        throw new IllegalArgumentException("Aucun allocataire trouvé avec le numéro AVS : " + noAVS);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
