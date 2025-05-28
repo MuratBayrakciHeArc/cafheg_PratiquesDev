@@ -24,14 +24,10 @@ public class AllocationService {
     this.allocationMapper = allocationMapper;
   }
 
-//  public List<Allocataire> findAllAllocataires(String likeNom) {
-//    System.out.println("Rechercher tous les allocataires");
-//    return allocataireMapper.findAll(likeNom);
-//  }
-public List<Allocataire> findAllAllocataires(String likeNom) {
-  logger.info("Appel du service : recherche de tous les allocataires avec filtre '{}'", likeNom);
-  return allocataireMapper.findAll(likeNom);
-}
+  public List<Allocataire> findAllAllocataires(String likeNom) {
+    logger.info("Appel du service : recherche de tous les allocataires avec filtre '{}'", likeNom);
+    return allocataireMapper.findAll(likeNom);
+  }
 
 
 
@@ -41,7 +37,6 @@ public List<Allocataire> findAllAllocataires(String likeNom) {
 
   public String getParentDroitAllocation(ParentAllocationRequest request) {
 
-//    System.out.println("Déterminer quel parent a le droit aux allocations");
     logger.info("Appel du service : détermination du parent ayant droit aux allocations");
 
 

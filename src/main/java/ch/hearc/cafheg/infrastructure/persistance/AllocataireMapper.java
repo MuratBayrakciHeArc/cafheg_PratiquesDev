@@ -20,43 +20,35 @@ public class AllocataireMapper extends Mapper {
   private static final String QUERY_FIND_WHERE_NUMERO = "SELECT NO_AVS, NOM, PRENOM FROM ALLOCATAIRES WHERE NUMERO=?";
 
   public List<Allocataire> findAll(String likeNom) {
-//    System.out.println("findAll() " + likeNom);
     logger.debug("findAll() appelé avec filtre: {}", likeNom);
     Connection connection = activeJDBCConnection();
     try {
       PreparedStatement preparedStatement;
       if (likeNom == null) {
-//        System.out.println("SQL: " + QUERY_FIND_ALL);
         logger.debug("SQL: {}", QUERY_FIND_ALL);
         preparedStatement = connection
             .prepareStatement(QUERY_FIND_ALL);
       } else {
 
-//        System.out.println("SQL: " + QUERY_FIND_WHERE_NOM_LIKE);
         logger.debug("SQL: {}", QUERY_FIND_WHERE_NOM_LIKE);
         preparedStatement = connection
             .prepareStatement(QUERY_FIND_WHERE_NOM_LIKE);
         preparedStatement.setString(1, likeNom + "%");
       }
-//      System.out.println("Allocation d'un nouveau tableau");
       logger.debug("Allocation d'un nouveau tableau pour les résultats");
       List<Allocataire> allocataires = new ArrayList<>();
 
-//      System.out.println("Exécution de la requête");
       logger.debug("Exécution de la requête");
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-//        System.out.println("Allocataire mapping");
         logger.debug("Début du mapping des résultats");
         while (resultSet.next()) {
-//          System.out.println("ResultSet#next");
           logger.debug("ResultSet#next");
           allocataires
               .add(new Allocataire(new NoAVS(resultSet.getString(3)), resultSet.getString(2),
                   resultSet.getString(1)));
         }
       }
-//      System.out.println("Allocataires trouvés " + allocataires.size());
       logger.debug("Allocataires trouvés : {}", allocataires.size());
       return allocataires;
     } catch (SQLException e) {
@@ -66,19 +58,15 @@ public class AllocataireMapper extends Mapper {
   }
 
   public Allocataire findById(long id) {
-//    System.out.println("findById() " + id);
     logger.debug("findById() appelé avec id: {}", id);
     Connection connection = activeJDBCConnection();
     try {
-//      System.out.println("SQL:" + QUERY_FIND_WHERE_NUMERO);
       logger.debug("SQL: {}", QUERY_FIND_WHERE_NUMERO);
       PreparedStatement preparedStatement = connection.prepareStatement(QUERY_FIND_WHERE_NUMERO);
       preparedStatement.setLong(1, id);
       ResultSet resultSet = preparedStatement.executeQuery();
-//      System.out.println("ResultSet#next");
       logger.debug("ResultSet#next");
       resultSet.next();
-//      System.out.println("Allocataire mapping");
       logger.debug("Mapping de l'allocataire depuis la base");
       return new Allocataire(new NoAVS(resultSet.getString(1)),
           resultSet.getString(2), resultSet.getString(3));
@@ -95,7 +83,6 @@ public class AllocataireMapper extends Mapper {
       PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
       preparedStatement.setLong(1, id);
       preparedStatement.executeUpdate();
-//      System.out.println("Allocataire supprimé : " + id);
       logger.info("Allocataire supprimé : {}", id);
     } catch (SQLException e) {
       logger.error("Erreur lors de la suppression de l'allocataire {}", id, e);
@@ -112,7 +99,6 @@ public class AllocataireMapper extends Mapper {
       preparedStatement.setString(2, nouveauPrenom);
       preparedStatement.setString(3, noAVS);
       int rows = preparedStatement.executeUpdate();
-//      System.out.println("Nombre de lignes modifiées : " + rows);
       logger.info("Nom et prénom mis à jour pour {}. Lignes affectées : {}", noAVS, rows);
     } catch (SQLException e) {
       logger.error("Erreur lors de la mise à jour du nom/prénom pour {}", noAVS, e);
@@ -128,12 +114,10 @@ public class AllocataireMapper extends Mapper {
       preparedStatement.setString(1, noAVS);
       ResultSet resultSet = preparedStatement.executeQuery();
       if (resultSet.next()) {
-//        return resultSet.getLong("NUMERO");
         long numero = resultSet.getLong("NUMERO");
         logger.debug("Numéro trouvé pour {} : {}", noAVS, numero);
         return numero;
       } else {
-//        throw new IllegalArgumentException("Aucun allocataire trouvé avec le numéro AVS : " + noAVS);
         logger.warn("Aucun allocataire trouvé avec le No AVS : {}", noAVS);
         throw new IllegalArgumentException("Aucun allocataire trouvé avec le numéro AVS : " + noAVS);
       }

@@ -23,7 +23,6 @@ public class Migrations {
    * Exécution des migrations
    * */
   public void start() {
-//    System.out.println("Doing migrations");
     logger.info("Démarrage des migrations Flyway...");
 
     String location;
@@ -41,8 +40,6 @@ public class Migrations {
         .load();
 
     flyway.migrate();
-//    System.out.println("Migrations done");
     logger.info("Migrations terminées avec succès");
   }
-
 }

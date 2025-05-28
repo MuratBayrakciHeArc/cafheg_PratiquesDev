@@ -82,20 +82,6 @@ public class RESTController {
     return inTransaction(() -> versementService.exportPDFVersements(allocataireId));
   }
 
-//  @DeleteMapping("/allocataires/{noAVS}")
-//  public ResponseEntity<?> supprimerAllocataire(@PathVariable String noAVS) {
-//    return inTransaction(() -> {
-//      try {
-//        AllocataireService service = new AllocataireService(new AllocataireMapper(), new VersementMapper());
-//        service.supprimerAllocataireParNoAVS(noAVS);
-//        return ResponseEntity.noContent().build();
-//      } catch (IllegalArgumentException e) {
-//        return ResponseEntity.status(404).body(e.getMessage());
-//      } catch (IllegalStateException e) {
-//        return ResponseEntity.status(409).body(e.getMessage());
-//      }
-//    });
-//  }
   @DeleteMapping("/allocataires/{noAVS}")
   public ResponseEntity<?> supprimerAllocataire(@PathVariable String noAVS) {
     return inTransaction(() -> {
@@ -112,7 +98,6 @@ public class RESTController {
       }
     });
   }
-
 
   @PutMapping("/allocataires/{noAVS}")
   public ResponseEntity<?> modifierAllocataire(

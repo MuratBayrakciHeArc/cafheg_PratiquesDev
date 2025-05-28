@@ -4,12 +4,8 @@ import ch.hearc.cafheg.infrastructure.persistance.Database;
 import ch.hearc.cafheg.infrastructure.persistance.Migrations;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -22,13 +18,6 @@ public class Application extends SpringBootServletInitializer {
    * @param args Arguments du programme
    */
   public static void main(String[] args) {
-
-//    Logger logger = LogManager.getLogger("ch.hearc.cafheg.infrastructure.api");
-//    logger.error("Message test dans err.log");
-//    logger.info("Message test dans cafheg_{date}.log");
-
-
-
     start();
     SpringApplication.run(Application.class, args);
   }

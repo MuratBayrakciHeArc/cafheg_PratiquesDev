@@ -21,11 +21,6 @@ public class AllocataireService {
 
     public void supprimerAllocataireParNoAVS(String noAVS) {
         long numero;
-//        try {
-//            numero = allocataireMapper.findNumeroByNoAVS(noAVS);
-//        } catch (IllegalArgumentException e) {
-//            throw new IllegalArgumentException("Aucun allocataire trouvé avec le No AVS : " + noAVS);
-//        }
         try {
             numero = allocataireMapper.findNumeroByNoAVS(noAVS);
         } catch (IllegalArgumentException e) {
@@ -38,16 +33,12 @@ public class AllocataireService {
         boolean aDesVersements = versements.stream()
                 .anyMatch(v -> v.getParentId() == numero);
 
-//        if (aDesVersements) {
-//            throw new IllegalStateException("Impossible de supprimer : l'allocataire a des versements.");
-//        }
         if (aDesVersements) {
             logger.warn("Tentative de suppression refusée : l'allocataire {} a des versements.", numero);
             throw new IllegalStateException("Impossible de supprimer : l'allocataire a des versements.");
         }
 
         allocataireMapper.delete(numero);
-//        System.out.println("Allocataire supprimé : " + numero);
         logger.info("Allocataire supprimé : {}", numero);
     }
 
@@ -55,14 +46,6 @@ public class AllocataireService {
         String nomActuel = allocataire.getNom();
         String prenomActuel = allocataire.getPrenom();
 
-//        if (nomActuel.equals(nouveauNom) && prenomActuel.equals(nouveauPrenom)) {
-//            System.out.println("Aucune modification nécessaire pour l'allocataire " + allocataire.getNoAVS().getValue());
-//            return false; // rien modifié
-//        }
-//
-//        allocataireMapper.updateNomPrenom(allocataire.getNoAVS().getValue(), nouveauNom, nouveauPrenom);
-//        System.out.println("Allocataire mis à jour : " + allocataire.getNoAVS().getValue());
-//        return true; // modifié
         if (nomActuel.equals(nouveauNom) && prenomActuel.equals(nouveauPrenom)) {
             logger.info("Aucune modification nécessaire pour l'allocataire {}", allocataire.getNoAVS().getValue());
             return false; // rien modifié
@@ -71,7 +54,6 @@ public class AllocataireService {
         allocataireMapper.updateNomPrenom(allocataire.getNoAVS().getValue(), nouveauNom, nouveauPrenom);
         logger.info("Allocataire mis à jour : {}", allocataire.getNoAVS().getValue());
         return true; // modifié
-
     }
 }
 
