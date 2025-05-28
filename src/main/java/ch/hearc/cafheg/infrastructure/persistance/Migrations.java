@@ -1,11 +1,15 @@
 package ch.hearc.cafheg.infrastructure.persistance;
 
 import org.flywaydb.core.Flyway;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Gestion des scripts de migration sur la base de données.
  */
 public class Migrations {
+
+  private static final Logger logger = LogManager.getLogger(Migrations.class);
 
   private final Database database;
   private final boolean forTest;
@@ -19,7 +23,8 @@ public class Migrations {
    * Exécution des migrations
    * */
   public void start() {
-    System.out.println("Doing migrations");
+//    System.out.println("Doing migrations");
+    logger.info("Démarrage des migrations Flyway...");
 
     String location;
     // Pour les tests, on éxécute que les scripts DDL (création de tables)
@@ -36,7 +41,8 @@ public class Migrations {
         .load();
 
     flyway.migrate();
-    System.out.println("Migrations done");
+//    System.out.println("Migrations done");
+    logger.info("Migrations terminées avec succès");
   }
 
 }

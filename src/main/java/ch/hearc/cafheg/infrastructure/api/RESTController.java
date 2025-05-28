@@ -12,7 +12,8 @@ import ch.hearc.cafheg.infrastructure.persistance.VersementMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -21,6 +22,9 @@ public class RESTController {
 
   private final AllocationService allocationService;
   private final VersementService versementService;
+
+  private static final Logger logger = LogManager.getLogger(RESTController.class);
+
 
   public RESTController() {
     this.allocationService = new AllocationService(new AllocataireMapper(), new AllocationMapper());
@@ -78,6 +82,20 @@ public class RESTController {
     return inTransaction(() -> versementService.exportPDFVersements(allocataireId));
   }
 
+//  @DeleteMapping("/allocataires/{noAVS}")
+//  public ResponseEntity<?> supprimerAllocataire(@PathVariable String noAVS) {
+//    return inTransaction(() -> {
+//      try {
+//        AllocataireService service = new AllocataireService(new AllocataireMapper(), new VersementMapper());
+//        service.supprimerAllocataireParNoAVS(noAVS);
+//        return ResponseEntity.noContent().build();
+//      } catch (IllegalArgumentException e) {
+//        return ResponseEntity.status(404).body(e.getMessage());
+//      } catch (IllegalStateException e) {
+//        return ResponseEntity.status(409).body(e.getMessage());
+//      }
+//    });
+//  }
   @DeleteMapping("/allocataires/{noAVS}")
   public ResponseEntity<?> supprimerAllocataire(@PathVariable String noAVS) {
     return inTransaction(() -> {
@@ -86,12 +104,15 @@ public class RESTController {
         service.supprimerAllocataireParNoAVS(noAVS);
         return ResponseEntity.noContent().build();
       } catch (IllegalArgumentException e) {
+        logger.error("Erreur 404 : Allocataire non trouvé pour le No AVS {}", noAVS, e);
         return ResponseEntity.status(404).body(e.getMessage());
       } catch (IllegalStateException e) {
+        logger.error("Erreur 409 : Suppression impossible, l'allocataire {} a des versements", noAVS, e);
         return ResponseEntity.status(409).body(e.getMessage());
       }
     });
   }
+
 
   @PutMapping("/allocataires/{noAVS}")
   public ResponseEntity<?> modifierAllocataire(
@@ -117,6 +138,7 @@ public class RESTController {
         }
 
       } catch (IllegalArgumentException e) {
+        logger.error("Erreur lors de la modification de l’allocataire {} : {}", noAVS, e.getMessage(), e);
         return ResponseEntity.status(404).body(e.getMessage());
       }
     });

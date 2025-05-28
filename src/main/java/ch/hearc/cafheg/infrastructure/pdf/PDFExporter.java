@@ -12,8 +12,12 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PDFExporter {
+
+  private static final Logger logger = LogManager.getLogger(PDFExporter.class);
 
   private final EnfantMapper enfantMapper;
 
@@ -23,7 +27,8 @@ public class PDFExporter {
 
   public byte[] generatePDFVversement(Allocataire allocataire,
       Map<LocalDate, Montant> montantParMois) {
-    System.out.println("Génération du PDF des versements");
+//    System.out.println("Génération du PDF des versements");
+    logger.info("Génération du PDF des versements pour l'allocataire {}", allocataire.getNoAVS().getValue());
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       PDDocument document = new PDDocument();
@@ -62,19 +67,22 @@ public class PDFExporter {
       document.save(baos);
       document.close();
 
-      System.out.println("PDF généré");
+//      System.out.println("PDF généré");
+      logger.info("PDF des versements généré avec succès");
       return baos.toByteArray();
 
 
     } catch (
         IOException e) {
+      logger.error("Erreur lors de la génération du PDF des versements pour l'allocataire {}", allocataire.getNoAVS().getValue(), e);
       throw new RuntimeException(e);
     }
   }
 
   public byte[] generatePDFAllocataire(Allocataire allocataire,
       Map<Long, Montant> montantsParEnfant) {
-    System.out.println("Génération du PDF pour un allocataire");
+//    System.out.println("Génération du PDF pour un allocataire");
+    logger.info("Génération du PDF allocataire pour {}", allocataire.getNoAVS().getValue());
 
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -117,10 +125,12 @@ public class PDFExporter {
       document.save(baos);
       document.close();
 
-      System.out.println("PDF généré");
+//      System.out.println("PDF généré");
+      logger.info("PDF allocataire généré avec succès");
       return baos.toByteArray();
     } catch (
         IOException e) {
+      logger.error("Erreur lors de la génération du PDF allocataire pour {}", allocataire.getNoAVS().getValue(), e);
       throw new RuntimeException(e);
     }
   }

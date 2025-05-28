@@ -4,8 +4,12 @@ import ch.hearc.cafheg.infrastructure.persistance.AllocataireMapper;
 import ch.hearc.cafheg.infrastructure.persistance.AllocationMapper;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AllocationService {
+
+  private static final Logger logger = LogManager.getLogger(AllocationService.class);
 
   private static final String PARENT_1 = "PARENT_1";
   private static final String PARENT_2 = "PARENT_2";
@@ -20,10 +24,16 @@ public class AllocationService {
     this.allocationMapper = allocationMapper;
   }
 
-  public List<Allocataire> findAllAllocataires(String likeNom) {
-    System.out.println("Rechercher tous les allocataires");
-    return allocataireMapper.findAll(likeNom);
-  }
+//  public List<Allocataire> findAllAllocataires(String likeNom) {
+//    System.out.println("Rechercher tous les allocataires");
+//    return allocataireMapper.findAll(likeNom);
+//  }
+public List<Allocataire> findAllAllocataires(String likeNom) {
+  logger.info("Appel du service : recherche de tous les allocataires avec filtre '{}'", likeNom);
+  return allocataireMapper.findAll(likeNom);
+}
+
+
 
   public List<Allocation> findAllocationsActuelles() {
     return allocationMapper.findAll();
@@ -31,7 +41,9 @@ public class AllocationService {
 
   public String getParentDroitAllocation(ParentAllocationRequest request) {
 
-    System.out.println("Déterminer quel parent a le droit aux allocations");
+//    System.out.println("Déterminer quel parent a le droit aux allocations");
+    logger.info("Appel du service : détermination du parent ayant droit aux allocations");
+
 
     //Code de base du projet
     /*  String eR = (String)parameters.getOrDefault("enfantResidence", "");
