@@ -1,6 +1,6 @@
 package integration;
 
-
+import ch.hearc.cafheg.business.allocations.Allocataire;
 import ch.hearc.cafheg.infrastructure.persistance.Database;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +13,6 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import javax.sql.DataSource;
 import java.io.File;
@@ -22,49 +21,33 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 
 @SpringBootTest(classes = ch.hearc.cafheg.infrastructure.application.Application.class)
 public class MyTestsIT {
 
+
     //Test utilisé à la partie 2
+
 //    @Test
 //    void simpleTest() {
 //        assertThat(1).isEqualTo(1);
 //    }
 
 
-    //private final DataSource dataSource;
-
-//    public MyTestsIT(DataSource dataSource) {
-//        this.dataSource = dataSource;
-//    }
-//    @Autowired
-//    private DataSource dataSource;
     private DataSource dataSource;
-
 
     @BeforeEach
     void setup() throws Exception {
-//        try (Connection connection = dataSource.getConnection()) {
-//            IDatabaseConnection dbUnitConnection = new DatabaseConnection(connection);
-//
-//            FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
-//            IDataSet dataSet = builder.build(new File("src/integration-test/resources/allocataires_base.xml"));
-//
-//            DatabaseOperation.CLEAN_INSERT.execute(dbUnitConnection, dataSet);
-//        }
         HikariConfig config = new HikariConfig();
-//        config.setJdbcUrl("jdbc:h2:mem:sample;DB_CLOSE_DELAY=-1");
         config.setJdbcUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-
         config.setDriverClassName("org.h2.Driver");
         config.setUsername("sa");
         config.setPassword("");
         this.dataSource = new HikariDataSource(config);
 
-        // ⚠️ EXÉCUTER LES MIGRATIONS D'ABORD
         Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/ddl", "classpath:db/dml")
@@ -72,7 +55,6 @@ public class MyTestsIT {
                 .migrate();
 
         Database.setDataSource(this.dataSource);
-
 
         try (Connection conn = dataSource.getConnection()) {
             conn.createStatement().execute("DELETE FROM VERSEMENTS_ALLOCATIONS");
@@ -83,34 +65,11 @@ public class MyTestsIT {
             conn.createStatement().execute("DELETE FROM ALLOCATAIRES");
         }
 
-
-
         IDatabaseConnection dbUnitConnection = new DatabaseConnection(dataSource.getConnection());
-
         IDataSet dataSet = new FlatXmlDataSetBuilder()
                 .build(new File("src/integration-test/resources/allocataires_base.xml"));
-
- //       DatabaseOperation.CLEAN_INSERT.execute(dbUnitConnection, dataSet);
         DatabaseOperation.INSERT.execute(dbUnitConnection, dataSet);
-
-//        DatabaseOperation.DELETE_ALL.execute(dbUnitConnection, dataSet);
-//        DatabaseOperation.INSERT.execute(dbUnitConnection, dataSet);
-
-
-
     }
-
-//    @Test
-//    void testSuppressionAllocataireSansVersement() {
-//        // Arrange
-//        AllocataireService service = new AllocataireService(new AllocataireMapper(), new VersementMapper());
-//        String noAVS = "7561234567890";
-//
-//
-//        // Act & Assert
-//        assertThatNoException()
-//                .isThrownBy(() -> service.supprimerAllocataireParNoAVS(noAVS));
-//    }
 
     @Test
     void testSuppressionAllocataireSansVersement() {
@@ -125,17 +84,54 @@ public class MyTestsIT {
         });
     }
 
+    @Test
+    void testSuppressionAllocataireAvecVersement() {
+        String noAVS = "756.8888.9999.11"; // Marie, qui a un versement
 
+        assertThatThrownBy(() -> {
+            Database.inTransaction(() -> {
+                AllocataireService service = new AllocataireService(new AllocataireMapper(), new VersementMapper());
+                service.supprimerAllocataireParNoAVS(noAVS);
+                return null;
+            });
+        }).hasCauseInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage("Impossible de supprimer : l'allocataire a des versements.");
+    }
 
+    @Test
+    void testModificationNomPrenomEffectif() {
+        Database.inTransaction(() -> {
+            AllocataireMapper mapper = new AllocataireMapper();
+            Allocataire allocataire = mapper.findById(mapper.findNumeroByNoAVS("756.6324.3723.75"));
 
+            AllocataireService service = new AllocataireService(mapper, new VersementMapper());
 
+            boolean result = service.modifierNomPrenom(allocataire, "Martin", "Jean-Luc");
 
+            assertThat(result).isTrue();
 
+            Allocataire allocataireModifie = mapper.findById(mapper.findNumeroByNoAVS("756.6324.3723.75"));
+            assertThat(allocataireModifie.getNom()).isEqualTo("Martin");
+            assertThat(allocataireModifie.getPrenom()).isEqualTo("Jean-Luc");
 
+            return null;
+        });
+    }
 
+    @Test
+    void testModificationNomPrenomInutile() {
+        Database.inTransaction(() -> {
+            AllocataireMapper mapper = new AllocataireMapper();
+            Allocataire allocataire = mapper.findById(mapper.findNumeroByNoAVS("756.0024.0023.00"));
 
+            AllocataireService service = new AllocataireService(mapper, new VersementMapper());
 
+            boolean result = service.modifierNomPrenom(allocataire, "Martin", "Enzo");
 
+            assertThat(result).isFalse();
 
+            return null;
+        });
+    }
 }
 
