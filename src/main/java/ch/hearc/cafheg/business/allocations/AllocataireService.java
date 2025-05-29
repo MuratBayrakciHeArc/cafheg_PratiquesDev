@@ -23,6 +23,7 @@ public class AllocataireService {
         long numero;
         try {
             numero = allocataireMapper.findNumeroByNoAVS(noAVS);
+            logger.info("Allocataire à supprimer : {}", numero);
         } catch (IllegalArgumentException e) {
             logger.error("Aucun allocataire trouvé avec le No AVS : {}", noAVS, e);
             throw new IllegalArgumentException("Aucun allocataire trouvé avec le No AVS : " + noAVS, e);
