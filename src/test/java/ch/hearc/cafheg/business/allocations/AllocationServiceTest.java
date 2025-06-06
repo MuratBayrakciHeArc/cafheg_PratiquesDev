@@ -2,14 +2,12 @@ package ch.hearc.cafheg.business.allocations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
 import ch.hearc.cafheg.business.common.Montant;
 import ch.hearc.cafheg.infrastructure.persistance.AllocataireMapper;
 import ch.hearc.cafheg.infrastructure.persistance.AllocationMapper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,13 +15,10 @@ import org.mockito.Mockito;
 class AllocationServiceTest {
 
   private AllocationService allocationService;
-
   private AllocataireMapper allocataireMapper;
   private AllocationMapper allocationMapper;
-
   private static final String PARENT_1 = "PARENT_1";
   private static final String PARENT_2 = "PARENT_2";
-
 
   @Test
   void getParentDroitAllocation_casA_parent1SeulActif_returnsParent1() {
@@ -49,9 +44,7 @@ class AllocationServiceTest {
     assertEquals(PARENT_2, result);
   }
 
-
   // Anciens tests utilisés avant la mise en place du schéma de l'exercice 1 partie 4.
-
 //  @Test
 //  void getParentDroitAllocation_lesDeuxActifs_parent1SalairePlusHaut_returnsParent1() {
 //   // Map<String, Object> params = new HashMap<>();
@@ -95,7 +88,6 @@ class AllocationServiceTest {
 //    String result = allocationService.getParentDroitAllocation(req);
 //    assertEquals(PARENT_1, result);
 //  }
-
 
 //  @Test
 //  void getParentDroitAllocation_salaireEgal_returnsParent2() {

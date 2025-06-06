@@ -29,8 +29,6 @@ public class AllocationService {
     return allocataireMapper.findAll(likeNom);
   }
 
-
-
   public List<Allocation> findAllocationsActuelles() {
     return allocationMapper.findAll();
   }

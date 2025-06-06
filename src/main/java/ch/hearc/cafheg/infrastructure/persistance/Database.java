@@ -77,10 +77,8 @@ public class Database {
     logger.info("Datasource initialisé avec succès");
   }
 
-
   public static void setDataSource(DataSource ds) {
     dataSource = ds;
   }
-
 
 }

@@ -1,7 +1,6 @@
 package ch.hearc.cafheg.business.versements;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import ch.hearc.cafheg.business.allocations.Allocataire;
 import ch.hearc.cafheg.business.allocations.NoAVS;
 import ch.hearc.cafheg.business.common.Montant;

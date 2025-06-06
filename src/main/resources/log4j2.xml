@@ -23,7 +23,6 @@
             </Policies>
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
         </RollingFile>
-
     </Appenders>
 
     <Loggers>
@@ -31,8 +30,6 @@
         <Logger name="ch" level="error" additivity="true">
             <AppenderRef ref="ErrorFile"/>
         </Logger>
-
-
         <Logger name="ch.hearc.cafheg.business.allocations" level="info" additivity="false">
             <AppenderRef ref="ServiceFile"/>
         </Logger>
@@ -48,8 +45,6 @@
         <Logger name="ch.hearc.cafheg.infrastructure.persistance" level="info" additivity="false">
             <AppenderRef ref="ServiceFile"/>
         </Logger>
-
-
         <!-- Logger global pour debug vers console -->
         <Root level="debug">
             <AppenderRef ref="ConsoleAppender"/>

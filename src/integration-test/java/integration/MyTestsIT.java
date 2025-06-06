@@ -24,18 +24,14 @@ import org.flywaydb.core.Flyway;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
-
 @SpringBootTest(classes = ch.hearc.cafheg.infrastructure.application.Application.class)
 public class MyTestsIT {
 
-
     //Test utilisé à la partie 2
-
 //    @Test
 //    void simpleTest() {
 //        assertThat(1).isEqualTo(1);
 //    }
-
 
     private DataSource dataSource;
 
@@ -134,4 +130,3 @@ public class MyTestsIT {
         });
     }
 }
-

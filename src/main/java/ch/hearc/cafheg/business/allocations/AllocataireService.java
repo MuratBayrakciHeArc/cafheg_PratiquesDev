@@ -29,7 +29,6 @@ public class AllocataireService {
             throw new IllegalArgumentException("Aucun allocataire trouvé avec le No AVS : " + noAVS, e);
         }
 
-
         List<VersementParentEnfant> versements = versementMapper.findVersementParentEnfant();
         boolean aDesVersements = versements.stream()
                 .anyMatch(v -> v.getParentId() == numero);
@@ -57,4 +56,3 @@ public class AllocataireService {
         return true; // modifié
     }
 }
-
